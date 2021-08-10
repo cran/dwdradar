@@ -35,6 +35,7 @@
 readRadarFile <- function(binfile, na=NA, clutter=NA)
 {
 finalOut <- try({
+if(!file.exists(binfile)) stop("The following file does not exist: '", binfile, "'.")
 openfile <- file(binfile,"rb") # will be read successively
 on.exit(close(openfile), add=TRUE)
 
@@ -67,11 +68,11 @@ if(h$product=="RX") # WX,EX? - currently handled like SF # ToDo: Test
 dat.val <- dat.val*h$precision
 
 # convert into a matrix + give row and column names according to RADOLAN convention:
-if(h$product=="RW" | h$product=="SF" | h$product=="RQ")
+if(h$product=="RW" | h$product=="SF" | h$product=="RQ" | h$product=="YW")
   {
   dat.mat <- matrix(dat.val, ncol=DIM[2], byrow=TRUE) # ToDo: not sure about this
   dat.mat <- apply(dat.mat, 2, rev)
-  dimnames(dat.mat) <- list(x.nrs=1:DIM[1]-1, y.nrs=1:DIM[2]-1) # ToDo: necessary? slow?
+  dimnames(dat.mat) <- list(x.nrs=1:DIM[1]-1, y.nrs=1:DIM[2]-1)
   }
 else
   {
